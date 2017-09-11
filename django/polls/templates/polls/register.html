@@ -1,0 +1,18 @@
+<h4> ******* Register User **********</h4>
+<form name="register" id="register" action="" method="POST">
+	{% csrf_token %}
+	<label for="name">Your name: </label>
+	<input id="name" type="text" name="name" value="{{ name }}">
+		<br>
+	<label for="password">Your password: </label>
+	<input id="password" type="text" name="password" value="{{ name }}">
+		<br>
+	<label for="user_type">Select what kind of user you will be: </label> 
+		<br>
+	<input type="radio" name="user_type" value="regular"> Regular<br>
+  	<input type="radio" name="user_type" value="admin"> Admin
+  		<br>
+  	<input type="submit" value="Register">
+</form>
+
+<h4> ******************************</h4>

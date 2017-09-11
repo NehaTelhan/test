@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
+from django.contrib.auth import authenticate, login
+
 
 
 from .models import Choice, Question
@@ -13,6 +15,43 @@ def index(request):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
     context = {'latest_question_list': latest_question_list}
     return render(request, 'polls/index.html', context)
+
+def login(request):
+    #FIX ME:
+
+
+
+    if request.method == 'POST':
+        # Gather the username and password provided by the user.
+        # This information is obtained from the login form.
+        username = request.POST['username']
+        password = request.POST['password']
+
+        # Use Django's machinery to attempt to see if the username/password
+        # combination is valid - a User object is returned if it is.
+        user = authenticate(username=username, password=password)
+        print("~~User has been authenticated.~~")
+        
+        if user:
+            #check if user has access (field in model class)
+            try:
+                userobj = User.objects.get(username=username)
+
+            except:
+              return render(request, 'polls/index.html', {'status': "Username already exists"})
+
+    return render(request, 'polls/index.html')
+
+def add_poll(request):
+    #Fix Me:
+
+
+    return render(request, 'polls/index.html')
+
+def add_user(request):
+    #FIXME:
+    return render(request, 'polls/index.html')
+
 
 
 class IndexView(generic.ListView):

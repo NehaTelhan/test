@@ -1,23 +1,162 @@
-<h1 style="text-decoration: underline; color: blue; text-align:center;"> Welcome to the Polls Archive </h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
 
-<h2> You'll find polls below that you can: </h2>
-<h3> Edit </h3>
-<h3> Delete </h3>
-<h3> Etc. </h3>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="">Polls</a>
 
-{% if latest_question_list %}
-<ul>
-  {% for question in latest_question_list %}
-  <!--<li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>-->
-  <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+        {% if user %}
+    		<p class="navbar-text navbar-left">Welcome, {{ user }}! </p>
 
-  {% endfor %}
-</ul>
-{% else %}
-<p>No polls are available.</p>
-{% endif %}
+    </div>
 
-{% load static %}
+
+    
+    <ul class="nav navbar-nav navbar-right">
+      <li><a style="color:gray;" data-toggle="collapse" data-target="#login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+
+       {% endif %}
+
+
+      <div id="login" class="collapse panel panel-default">
+                <div class="panel-body">
+                    <form action="/login/" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                          <label for="username"><label for="username">Username:</label>
+                          <input class="form-control" id="username" maxlength="150" name="username" type="text" required />
+                        </div>
+                        
+                        <div class="form-group">
+                          <label for="password"><label for="password">Password:</label>
+                          <input class="form-control" id="password" name="password" type="password" required />
+                        </div>
+                        
+                        <input class="btn btn-primary" type="submit" value="Submit"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </ul>
+  </div>
+</nav>
+
+ <div class="col-md-2">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li><a href="/add_poll/">Add Polls</a></li>
+                        
+                        <li><a href="/add_user/">Add Users</a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+  
+  <div class="col-md-10">
+
+ 
+	{% if latest_question_list %}
+	<ul>
+	  {% for question in latest_question_list %}
+		<div class="jumbotron">
+  			<p class="lead">
+	 			 <a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a>
+	  		</p>
+  		<hr class="my-4">
+ 		<p>Created By {{ question.question_owner }}</p>
+  		</div>
+
+	  {% endfor %}
+	</ul>
+	{% else %}
+	<p>No polls are available.</p>
+	{% endif %}
+
+	{% load static %}
+	</div>
+  
+
 
 <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" />
 
+<!-- 
+
+<h4> ******* Register User **********</h4>
+<form name="register" id="register" action="/register_user" method="POST">
+	{% csrf_token %}
+	<label for="name">Your name: </label>
+	<input id="name" type="text" name="name" value="{{ name }}">
+		<br>
+	<label for="password">Your password: </label>
+	<input id="password" type="text" name="password" value="{{ password }}">
+		<br>
+	<label for="user_type">Select what kind of user you will be: </label> 
+		<br>
+	<input type="radio" name="user_type" value="regular"> Regular<br>
+  	<input type="radio" name="user_type" value="admin"> Admin
+  		<br>
+  	<input type="submit" value="Register">
+</form>
+
+<h4> ******************************</h4>
+
+
+<h4> ******* Aleady have an account? Login! **********</h4>
+<form action="/create_user/" method="POST">
+	<label for="name">Your name: </label>
+	<input id="name" type="text" name="name" value="{{ name }}">
+		<br>
+	<label for="password">Your password: </label>
+	<input id="password" type="text" name="password" value="{{ name }}">
+		<br>
+	<input type="submit" value="Login">
+</form>
+
+<h4> **********************************************</h4> -->
+
+
+<!-- h1>Table</h1>
+
+<h2> <span class="highlight"> In this table, you can see the use of css stylization with alternating colors </span> </h2>
+
+<table>
+  <tr>
+    <th>Firstname</th>
+    <th>Lastname</th>
+    <th>Savings</th>
+  </tr>
+  <tr>
+    <td>Peter</td>
+    <td>Griffin</td>
+    <td>$100</td>
+  </tr>
+  <tr>
+    <td>Lois</td>
+    <td>Griffin</td>
+    <td>$150</td>
+  </tr>
+  <tr>
+    <td>Joe</td>
+    <td>Swanson</td>
+    <td>$300</td>
+  </tr>
+  <tr>
+    <td>Cleveland</td>
+    <td>Brown</td>
+    <td>$250</td>
+</tr>
+</table> -->
+
+
+<!-- <h1> <span class="highlight"> This page is in the running for worst pages ever!!!!!</span> </h1> -->

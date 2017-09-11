@@ -1,18 +1,56 @@
 li a {
-    color: green;
+    color: blue;
+    text-align: center;
+    font-size: 150%;
 }
 
 body {
     background: white url("images/background.gif") no-repeat right bottom;
 }
 
-body, html {
-    height: 100%
-}
-
-body,h1,h2,h3,h4,h5,h6 {
-    font-family: "Amatic SC", sans-serif;
-    color: red;
-    text-align: center;
+h1 {
+	color: blue;
+	text-align: center;
     text-decoration: underline;
 }
+
+h2 {
+	color: blue;
+	text-align: left;
+}
+
+body, html {
+    height: 100%;
+    text-align: center;
+}
+
+h3,h5,h6 {
+    font-family: "Amatic SC", sans-serif;
+    color: white;
+    text-align: center;  
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #4286f4}
+tr:nth-child(odd){background-color: #F8F8F8}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+span.highlight {
+    background-color: pink;
+}
+
+
+
