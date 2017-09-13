@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Polls</a>
+
+        {% if user %}
+        <p class="navbar-text navbar-left">Welcome, {{ user }}! <text style="color: red;">{{status}} </text></p>
+
+      </div>
+
+       <ul class="nav navbar-nav navbar-right">
+      <li><a style="color:gray;"><span class="glyphicon glyphicon-log-in"></span> Log out</a></li>
+
+        {% endif %}
+
+  </ul>
+</div>
+</nav>
+
+
+
+<div class="col-md-2" style="position: center">
+  <div class="panel panel-default" style="position: center">
+    <div class="panel-body">
+     <form role="form" action="/add_user2/" method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input class="form-control" id="username" maxlength="150" name="username" type="text" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input class="form-control" id="password" name="password" type="password" required />
+      </div>
+
+      <div class="form-group">
+        <label for="user_type">User Type:</label>
+      </br>
+      <select for="user_type" name="user_type">
+        <option name="user_type" id="admin" value="admin" > Administrative</option>
+        <option name="user_type" id="regular" value="regular" > Regular</option>
+      </select>
+    </div>
+
+    <input class="btn btn-primary" type="submit" value="Submit"/>
+  </form>
+</div>
+</div>
+</div>
+
+ <div class="col-md-10">
+
+ 
+  {% if latest_question_list %}
+  <ul>
+    {% for question in latest_question_list %}
+    <div class="jumbotron">
+        <p class="lead">
+         <a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a>
+        </p>
+      <hr class="my-4">
+    <p>Created By {{ question.question_owner }}</p>
+      </div>
+
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>No polls are available.</p>
+  {% endif %}
+
+  {% load static %}
+  </div>
+  
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" />
+
+
+

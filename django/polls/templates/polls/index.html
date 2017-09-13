@@ -12,24 +12,25 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="">Polls</a>
+      <a class="navbar-brand" href="/">Polls</a>
 
         {% if user %}
-    		<p class="navbar-text navbar-left">Welcome, {{ user }}! </p>
+    		<p class="navbar-text navbar-left">Welcome, {{ user }}! <font color=red;> {{ status }} </font></p>
 
     </div>
 
-
-    
     <ul class="nav navbar-nav navbar-right">
       <li><a style="color:gray;" data-toggle="collapse" data-target="#login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+
+      <ul class="nav navbar-nav navbar-right">
+      <li><a href="/logout/" style="color:gray;"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
 
        {% endif %}
 
 
       <div id="login" class="collapse panel panel-default">
                 <div class="panel-body">
-                    <form action="/login/" method="post">
+                    <form action="/log_in/" method="post">
                         {% csrf_token %}
                         <div class="form-group">
                           <label for="username"><label for="username">Username:</label>
@@ -75,6 +76,13 @@
 	  		</p>
   		<hr class="my-4">
  		<p>Created By {{ question.question_owner }}</p>
+
+ 			{% if question.question_owner == user %}
+
+	 			<button type="button" class="btn btn-outline-danger" id="delete_poll" ><a style="color: red;" href="/delete_poll/" id="delete" value="{{ question }}" >Delete</a></button>
+
+	 		{% endif %}
+	 
   		</div>
 
 	  {% endfor %}
@@ -90,73 +98,3 @@
 
 <link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}" />
 
-<!-- 
-
-<h4> ******* Register User **********</h4>
-<form name="register" id="register" action="/register_user" method="POST">
-	{% csrf_token %}
-	<label for="name">Your name: </label>
-	<input id="name" type="text" name="name" value="{{ name }}">
-		<br>
-	<label for="password">Your password: </label>
-	<input id="password" type="text" name="password" value="{{ password }}">
-		<br>
-	<label for="user_type">Select what kind of user you will be: </label> 
-		<br>
-	<input type="radio" name="user_type" value="regular"> Regular<br>
-  	<input type="radio" name="user_type" value="admin"> Admin
-  		<br>
-  	<input type="submit" value="Register">
-</form>
-
-<h4> ******************************</h4>
-
-
-<h4> ******* Aleady have an account? Login! **********</h4>
-<form action="/create_user/" method="POST">
-	<label for="name">Your name: </label>
-	<input id="name" type="text" name="name" value="{{ name }}">
-		<br>
-	<label for="password">Your password: </label>
-	<input id="password" type="text" name="password" value="{{ name }}">
-		<br>
-	<input type="submit" value="Login">
-</form>
-
-<h4> **********************************************</h4> -->
-
-
-<!-- h1>Table</h1>
-
-<h2> <span class="highlight"> In this table, you can see the use of css stylization with alternating colors </span> </h2>
-
-<table>
-  <tr>
-    <th>Firstname</th>
-    <th>Lastname</th>
-    <th>Savings</th>
-  </tr>
-  <tr>
-    <td>Peter</td>
-    <td>Griffin</td>
-    <td>$100</td>
-  </tr>
-  <tr>
-    <td>Lois</td>
-    <td>Griffin</td>
-    <td>$150</td>
-  </tr>
-  <tr>
-    <td>Joe</td>
-    <td>Swanson</td>
-    <td>$300</td>
-  </tr>
-  <tr>
-    <td>Cleveland</td>
-    <td>Brown</td>
-    <td>$250</td>
-</tr>
-</table> -->
-
-
-<!-- <h1> <span class="highlight"> This page is in the running for worst pages ever!!!!!</span> </h1> -->

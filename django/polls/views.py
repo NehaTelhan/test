@@ -4,8 +4,9 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from django.contrib.auth import authenticate, login
-
-
+from django.contrib.auth.models import User
+from django.contrib.auth.views import logout
+import datetime
 
 from .models import Choice, Question
 
@@ -16,11 +17,8 @@ def index(request):
     context = {'latest_question_list': latest_question_list}
     return render(request, 'polls/index.html', context)
 
-def login(request):
+def log_in(request):
     #FIX ME:
-
-
-
     if request.method == 'POST':
         # Gather the username and password provided by the user.
         # This information is obtained from the login form.
@@ -30,26 +28,119 @@ def login(request):
         # Use Django's machinery to attempt to see if the username/password
         # combination is valid - a User object is returned if it is.
         user = authenticate(username=username, password=password)
-        print("~~User has been authenticated.~~")
+        print("~~" + str(user) + " has been authenticated.~~")
+        login(request, user)
         
         if user:
             #check if user has access (field in model class)
+            print("USer is: --->" +  str(user))
             try:
                 userobj = User.objects.get(username=username)
 
             except:
-              return render(request, 'polls/index.html', {'status': "Username already exists"})
+              return render(request, 'polls/index.html', {
+                'status': "Username already exists", 
+                'user': user
+                })
 
+        return render(request, 'polls/index.html')
     return render(request, 'polls/index.html')
+
+def logout_view(request):
+    if request.user.is_authenticated():
+        logout(request)
+        return render(request, "polls/index.html")
+    else:
+        return render(request, "polls/error.html")
+
 
 def add_poll(request):
-    #Fix Me:
+    if request.user.is_authenticated():
+        return render(request, "polls/add_poll.html")
+    else:
+        return render(request, 'polls/error.html')
+
+def add_poll2(request):
+    print("In add poll 2")
+
+    if request.user.is_authenticated():
+        cur_user = request.user.id
+
+        try:
+            user = User.objects.get(id=cur_user)
+        except:
+            print("User does not exist")
+
+        if request.method == 'POST':
+            question_text = request.POST.get('poll_question')
+            poll_choices = request.POST.get('poll_choices')
+            poll_choices = poll_choices.split(",")
+
+            try:
+                question = Question(question_text = question_text, 
+                                    question_owner = user, 
+                                    pub_date = datetime.datetime.now())
+                question.save()
+
+                print("QUESTIN ID", question.id)
+                for item in poll_choices:
+                    choice = Choice(question=question, choice_text=item)
+                    choice.save()
+
+            except Exception as e:
+                print(e.message, type(e))
+                return render(request, 'polls/index.html', {})
+
+        return render(request, "polls/index.html")
 
 
-    return render(request, 'polls/index.html')
+def delete_poll(request):
+    print ("I'm in DELETE POLL -----------")
+
+    if request.user.is_authenticated():
+        question = request.POST.get('delete')
+        print(question, "<~~~~~~~")
+
+        question.delete()
+    
+
+
+        return render(request, "polls/index.html")
+    return None
+
 
 def add_user(request):
-    #FIXME:
+    if request.user.is_authenticated():
+        return render(request, 'polls/add_user.html')
+    else:
+        return render(request, 'polls/error.html')
+
+
+def add_user2(request):
+    print("I'm in ADD USER2")
+
+    if (request.method == 'POST') and (request.user.is_authenticated()):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user_type = request.POST.get('user_type')
+
+
+        if (user_type == "admin"):
+            is_superuser = True
+        else:
+            is_superuser = False
+
+        try: 
+            user = User(username = username, password = password, is_superuser = is_superuser)
+            print("Super User Status: ", user.is_superuser)
+            user.set_password(password)
+            user.save()
+        except:
+            return render(request, 'polls/index.html', {'status': "Username already exists"})
+
+    users = User.objects.all()
+    # print(users)
+
     return render(request, 'polls/index.html')
 
 

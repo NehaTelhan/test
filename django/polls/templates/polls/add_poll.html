@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Polls</a>
+
+        {% if user %}
+            <p class="navbar-text navbar-left">Welcome, {{ user }}! <font color=red;> {{ status }} </font></p>
+
+    </div>
+
+    <ul class="nav navbar-nav navbar-right">
+      <li><a style="color:gray;" data-toggle="collapse" data-target="#login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+
+       {% endif %}
+       </ul>
+    </div>
+</nav>
+
+
+
+<div class="panel panel-default">
+                <div class="panel-heading">Create a Poll</div>
+                <div class="panel-body">
+                    <form action="/add_poll2/" method="post">
+                    {% csrf_token %}
+                        <div class="form-group">
+                            <label for="poll_question"><label for="poll_question">Question:</label></label>
+                            
+                            <input class="form-control" id="poll_question" maxlength="200" name="poll_question" type="text" required />
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="poll_choices"><label for="poll_choices">Choices:</label></label>
+                            <p>Enter poll choices seperated by commas.
+                            <small> (i.e: 'Choice A, Choice B, Choice C'.)</small></p>
+                            <input class="form-control" id="poll_choices" maxlength="1000" name="poll_choices" type="text" required />
+                        </div>
+                        
+                        <input class="btn btn-primary" type="submit" value="Submit"/>
+                    </form>
+                </div>
+            </div>
+        </div>
