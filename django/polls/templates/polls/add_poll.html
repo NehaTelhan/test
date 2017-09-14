@@ -12,7 +12,7 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="/">Polls</a>
+      <a class="navbar-brand" href="{% url 'polls:index' %}">Polls</a>
 
         {% if user %}
             <p class="navbar-text navbar-left">Welcome, {{ user }}! <font color=red;> {{ status }} </font></p>
@@ -32,7 +32,7 @@
 <div class="panel panel-default">
                 <div class="panel-heading">Create a Poll</div>
                 <div class="panel-body">
-                    <form action="/add_poll2/" method="post">
+                    <form action="{% url 'polls:add_poll2' %}" method="post">
                     {% csrf_token %}
                         <div class="form-group">
                             <label for="poll_question"><label for="poll_question">Question:</label></label>

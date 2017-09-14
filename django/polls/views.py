@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
@@ -28,37 +28,59 @@ def log_in(request):
         # Use Django's machinery to attempt to see if the username/password
         # combination is valid - a User object is returned if it is.
         user = authenticate(username=username, password=password)
-        print("~~" + str(user) + " has been authenticated.~~")
-        login(request, user)
+
+        if user is not None:
+            login(request, user)
+        else:
+            return render(request, 'polls/error.html')
         
         if user:
             #check if user has access (field in model class)
-            print("USer is: --->" +  str(user))
             try:
                 userobj = User.objects.get(username=username)
 
             except:
-              return render(request, 'polls/index.html', {
+              return redirect('polls:index', {
                 'status': "Username already exists", 
                 'user': user
                 })
 
-        return render(request, 'polls/index.html')
-    return render(request, 'polls/index.html')
+                # render(request, 'polls/index.html', {
+                # 'status': "Username already exists", 
+                # 'user': user
+                # })
+        return redirect('polls:index')
+        # return render(request, 'polls/index.html')
+        # return HttpResponseRedirect('/django/nt7ab/polls/index.html')
+
+    return redirect('polls:index')
+    # return render(request, 'polls/index.html')
+    # return HttpResponseRedirect('/django/nt7ab/polls/index.html')
+
+
 
 def logout_view(request):
     if request.user.is_authenticated():
         logout(request)
-        return render(request, "polls/index.html")
+        # return HttpResponseRedirect('/django/nt7ab/polls/index.html')
+        # return render(request, 'polls/index.html')
+        return redirect('polls:index')
     else:
-        return render(request, "polls/error.html")
+        # return HttpResponseRedirect('/django/nt7ab/polls/index.html')
+        # return render(request, 'polls/index.html')
+        return redirect('polls:index')
+
 
 
 def add_poll(request):
     if request.user.is_authenticated():
+        # return redirect(' polls:add_poll ')
         return render(request, "polls/add_poll.html")
+        # return HttpResponseRedirect('/django/nt7ab/polls/add_poll.html')
     else:
         return render(request, 'polls/error.html')
+        # return HttpResponseRedirect('/django/nt7ab/polls/error.html')
+
 
 def add_poll2(request):
     print("In add poll 2")
@@ -78,48 +100,68 @@ def add_poll2(request):
 
             try:
                 question = Question(question_text = question_text, 
-                                    question_owner = user, 
+                                    question_owner = user,
                                     pub_date = datetime.datetime.now())
                 question.save()
 
-                print("QUESTIN ID", question.id)
                 for item in poll_choices:
                     choice = Choice(question=question, choice_text=item)
                     choice.save()
 
             except Exception as e:
                 print(e.message, type(e))
-                return render(request, 'polls/index.html', {})
+                # return render(request, 'polls/index.html')
+                return redirect('polls:index')
+                # return HttpResponseRedirect('/django/nt7ab/polls/index.html')
 
-        return render(request, "polls/index.html")
+        # return render(request, "polls/index.html")
+        return redirect('polls:index')
+        # return HttpResponseRedirect('/django/nt7ab/polls/index.html')
 
 
 def delete_poll(request):
     print ("I'm in DELETE POLL -----------")
 
     if request.user.is_authenticated():
-        question = request.POST.get('delete')
-        print(question, "<~~~~~~~")
+        poll_id = request.POST.get('poll_id')
 
-        question.delete()
-    
+        try: 
+            ques = Question.objects.get(pk = poll_id)
+        except:
+            return render(request, 'polls/error.html')
 
+        # print(str(request.user.username), str(ques.question_owner), poll_id, ques)
 
-        return render(request, "polls/index.html")
-    return None
+        if (str(request.user.username) == str(ques.question_owner)):
+            ques.delete()
+        else:
+            return render(request, 'polls/error.html')
+            # return HttpResponseRedirect('/django/nt7ab/polls/error.html')
+
+    else:
+        return render(request, 'polls/error.html')
+        # return HttpResponseRedirect('/django/nt7ab/polls/error.html')
+
+    return render(request, 'polls/index.html')
+    # return redirect('polls:index')
+    # return HttpResponseRedirect('/django/nt7ab/polls/index.html')
+
 
 
 def add_user(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated() and request.user.is_superuser:
         return render(request, 'polls/add_user.html')
+        # return redirect('polls:add_user')
+        # return HttpResponseRedirect('/django/nt7ab/polls/add_user.html')
     else:
         return render(request, 'polls/error.html')
+        # return HttpResponseRedirect('/django/nt7ab/polls/error.html')
 
 
 def add_user2(request):
     print("I'm in ADD USER2")
 
-    if (request.method == 'POST') and (request.user.is_authenticated()):
+    if (request.method == 'POST') and (request.user.is_authenticated()) and request.user.is_superuser:
         username = request.POST.get('username')
         password = request.POST.get('password')
         user_type = request.POST.get('user_type')
@@ -132,16 +174,20 @@ def add_user2(request):
 
         try: 
             user = User(username = username, password = password, is_superuser = is_superuser)
-            print("Super User Status: ", user.is_superuser)
             user.set_password(password)
             user.save()
         except:
-            return render(request, 'polls/index.html', {'status': "Username already exists"})
+            # return render(request, 'polls/index.html', {'status': "Username already exists"})
+            return redirect('polls:index')
+            # return HttpResponseRedirect('/django/nt7ab/polls/index.html')
 
-    users = User.objects.all()
-    # print(users)
-
-    return render(request, 'polls/index.html')
+    else:
+        # return HttpResponseRedirect('/django/nt7ab/polls/index.html')
+        return redirect('polls:index')
+        # render(request, 'polls/index.html', {'status': "You're not an admin user, cannot create new users"})
+    # return render(request, 'polls/index.html')
+    return redirect('polls:index')
+    # return HttpResponseRedirect('/django/nt7ab/polls/index.html')
 
 
 

@@ -12,7 +12,7 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="/">Polls</a>
+      <a class="navbar-brand" href="{% url 'polls:index' %}">Polls</a>
 
         {% if user %}
     		<p class="navbar-text navbar-left">Welcome, {{ user }}! <font color=red;> {{ status }} </font></p>
@@ -23,14 +23,14 @@
       <li><a style="color:gray;" data-toggle="collapse" data-target="#login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
 
       <ul class="nav navbar-nav navbar-right">
-      <li><a href="/logout/" style="color:gray;"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+      <li><a href="{% url 'polls:logout' %}" style="color:gray;"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
 
        {% endif %}
 
 
       <div id="login" class="collapse panel panel-default">
                 <div class="panel-body">
-                    <form action="/log_in/" method="post">
+                    <form action="{% url 'polls:log_in' %}" method="post">
                         {% csrf_token %}
                         <div class="form-group">
                           <label for="username"><label for="username">Username:</label>
@@ -55,9 +55,24 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <ul class="nav nav-pills nav-stacked">
-                        <li><a href="/add_poll/">Add Polls</a></li>
+                    	<small> {{ status }} </small>
+
+                        <li><a href="{% url 'polls:add_poll' %}">Add Polls</a></li>
                         
-                        <li><a href="/add_user/">Add Users</a></li>
+                        <li><a href="{% url 'polls:add_user' %}">Add Users</a></li>
+                        <li><a data-toggle="collapse" data-target="#delete">Delete Polls</a></li>
+
+                        <div id="delete" class="collapse panel">
+                        <small><font color="blue"> You must be the owner of a poll to delete it.</font></small>
+
+	                        <form action="{% url 'polls:delete_poll' %}" method="post">
+                        		{% csrf_token %}
+	                       		<label for="poll_id" name="poll_id" id="poll_id">Poll ID: </label>
+	                       		<input class="form-control" name="poll_id" id="poll_id" type="number" required />
+
+	                       		<input class="btn btn-primary" type="submit" value="Submit" />
+	                        </form>
+                        </div>
                         
                     </ul>
                 </div>
@@ -75,20 +90,16 @@
 	 			 <a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a>
 	  		</p>
   		<hr class="my-4">
- 		<p>Created By {{ question.question_owner }}</p>
+ 		<p>ID: {{ question.id }} Created By {{ question.question_owner }}</p>
 
- 			{% if question.question_owner == user %}
 
-	 			<button type="button" class="btn btn-outline-danger" id="delete_poll" ><a style="color: red;" href="/delete_poll/" id="delete" value="{{ question }}" >Delete</a></button>
-
-	 		{% endif %}
 	 
   		</div>
 
 	  {% endfor %}
 	</ul>
 	{% else %}
-	<p>No polls are available.</p>
+	<h3>Either.....there are no  polls are available. But more likely, there are and I'm exhausted from this assignment and don't want to figure out how to redirect to that page.... <br>  ...so do me a favor and click <b> polls </b> in the <u> top left corner </u></h3>
 	{% endif %}
 
 	{% load static %}
